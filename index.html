@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     </head>
 <body>
+    
     <div class="app-container">
         <header class="app-header">
             <h1>My Tasks</h1>
@@ -18,49 +19,110 @@
             </button>
         </header>
 
-        <!-- TaskCard -->
-        <main class="task-list-container">
+        <!-- APP CONTROL -->
+        <div class="app-controls">
+            <div class="search-bar">
+                <input type="search" id="searchInput" placeholder="Search by title or description...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            
+            <div class="filters">
+                <select id="filterStatus" aria-label="Filter by status">
+                    <option value="all">All Tasks</option>
+                    <option value="incomplete">Incomplete</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <select id="filterCategory" aria-label="Filter by category">
+                    <option value="all">All Categories</option>
+                    <option value="Studying">Studying</option>
+                    <option value="Working">Working</option>
+                    <option value="Meeting">Meeting</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Exercise">Exercise</option>
+                    <option value="Cleaning">Cleaning</option>
+                    <option value="Cooking">Cooking</option>
+                    <option value="Other">Other</option>
+                </select>
+                <select id="filterPriority" aria-label="Filter by priority">
+                    <option value="all">All Priorities</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+                 <select id="filterColor" aria-label="Filter by color">
+                    <option value="all">All Colors</option>
+                    <option value="bg-blue">Blue</option>
+                    <option value="bg-green">Green</option>
+                    <option value="bg-orange">Orange</option>
+                    <option value="bg-purple">Purple</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- todoList -->
+        <main class="task-list-container" id="todoList">
+
         </main>
+
     </div>
 
+    <!-- ADD FORM -->
     <div id="addTaskModal" class="modal-overlay">
         <div class="modal-content">
             <form class="todo-app-form">
-                <h2>Add New Task</h2>
+                <h2 id="formTitle">Add New Task</h2>
+
+                <input type="hidden" id="task-id" name="taskId">
+
                 <div class="form-group">
                     <label for="title">Title</label>
-                    <input type="text" id="title" required>
+                    <input type="text" id="title" name="title" required>
                 </div>
+
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea id="description" rows="3"></textarea>
+                    <textarea id="description" name="description" rows="3"></textarea>
                 </div>
+
                 <div class="form-group">
                     <label for="category">Category</label>
-                    <input type="text" id="category">
+                    <select id="category" name="category">
+                        <option value="Studying">Studying</option>
+                        <option value="Working">Working</option>
+                        <option value="Meeting">Meeting</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Exercise">Exercise</option>
+                        <option value="Cleaning">Cleaning</option>
+                        <option value="Cooking">Cooking</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
+
                 <div class="form-group">
                     <label for="priority">Priority</label>
-                    <select id="priority">
+                    <select id="priority" name="priority">
                         <option value="Low">Low</option>
                         <option value="Medium">Medium</option>
                         <option value="High">High</option>
                     </select>
                 </div>
+
                 <div class="form-group-inline">
                     <div class="form-group">
                         <label for="startTime">Start Time</label>
-                        <input type="time" id="startTime">
+                        <input type="time" id="startTime" name="startTime">
                     </div>
                     <div class="form-group">
                         <label for="endTime">End Time</label>
-                        <input type="time" id="endTime">
+                        <input type="time" id="endTime" name="endTime">
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label for="dueDate">Due Date</label>
-                    <input type="date" id="dueDate" required>
+                    <input type="date" id="dueDate" name="dueDate" required>
                 </div>
+
                  <div class="form-group">
                     <label>Card Color</label>
                     <div class="color-options">
@@ -68,17 +130,31 @@
                         <label for="color-blue" class="color-dot bg-blue"></label>
                         <input type="radio" id="color-green" name="cardColor" value="bg-green">
                         <label for="color-green" class="color-dot bg-green"></label>
-                         <input type="radio" id="color-orange" name="cardColor" value="bg-orange">
+                        <input type="radio" id="color-orange" name="cardColor" value="bg-orange">
                         <label for="color-orange" class="color-dot bg-orange"></label>
                         <input type="radio" id="color-purple" name="cardColor" value="bg-purple">
                         <label for="color-purple" class="color-dot bg-purple"></label>
                     </div>
                 </div>
+
                 <div class="form-actions">
-                    <button type="submit" class="btn-submit">Add Task</button>
+                    <button type="submit" class="btn-submit" id="formSubmitBtn">Add Task</button>
                     <button type="button" class="btn-close-modal">Cancel</button>
                 </div>
+
             </form>
+        </div>
+    </div>
+
+    <!-- Modal confirm -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content small-modal">
+            <h2>Confirm Deletion</h2>
+            <p id="confirmMessage">Are you sure you want to delete this task?</p>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
+                <button type="button" class="btn-delete-confirm" id="confirmDeleteBtn">Delete</button>
+            </div>
         </div>
     </div>
 
