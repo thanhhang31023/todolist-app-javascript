@@ -17,6 +17,49 @@
                     <span>Add New Task</span>
                 </button>
             </header>
+
+            
+        <!-- APP FILTERS -->
+        <div class="app-controls">
+            <div class="search-bar">
+                <input type="search" id="searchInput" placeholder="Search by title or description...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            
+            <div class="filters">
+                <select id="filterStatus" aria-label="Filter by status">
+                    <option value="all">All Tasks</option>
+                    <option value="incomplete">Incomplete</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <select id="filterCategory" aria-label="Filter by category">
+                    <option value="all">All Categories</option>
+                    <option value="Studying">Studying</option>
+                    <option value="Working">Working</option>
+                    <option value="Meeting">Meeting</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Exercise">Exercise</option>
+                    <option value="Cleaning">Cleaning</option>
+                    <option value="Cooking">Cooking</option>
+                    <option value="Other">Other</option>
+                </select>
+                <select id="filterPriority" aria-label="Filter by priority">
+                    <option value="all">All Priorities</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+                 <select id="filterColor" aria-label="Filter by color">
+                    <option value="all">All Colors</option>
+                    <option value="bg-blue">Blue</option>
+                    <option value="bg-green">Green</option>
+                    <option value="bg-orange">Orange</option>
+                    <option value="bg-purple">Purple</option>
+                </select>
+            </div>
+        </div>
+
+
         </div>
 
         <script src="main.js"></script>

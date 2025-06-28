@@ -66,3 +66,78 @@ body {
 .add-btn i {
     margin-right: 8px;
 }
+
+
+/* =============================================================== */
+/* CSS CHO KHU VỰC ĐIỀU KHIỂN (TÌM KIẾM & BỘ LỌC)                */
+/* =============================================================== */
+.app-controls {
+    padding: 20px 30px;
+    display: flex;
+    flex-wrap: wrap; /* Cho phép rớt dòng trên màn hình nhỏ */
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: #fcfdff;
+}
+
+/* --- Thanh tìm kiếm --- */
+.search-bar {
+    position: relative;
+    flex-grow: 1; /* Cho phép thanh tìm kiếm co giãn */
+    min-width: 250px; /* Độ rộng tối thiểu */
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 15px 12px 40px; /* Thêm padding bên trái cho icon */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+
+.search-bar input:focus {
+    background-color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(106, 90, 249, 0.2);
+    outline: none;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9e9e9e;
+    font-size: 16px;
+    pointer-events: none; /* Icon không bắt sự kiện click */
+}
+
+/* --- Các bộ lọc --- */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.filters select {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.filters select:hover {
+    border-color: #c0c0c0;
+}
+
+.filters select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(106, 90, 249, 0.2);
+    outline: none;
+}
