@@ -1,35 +1,51 @@
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);   
 
-// Hàm tiện ích để thoát các ký tự HTML đặc biệt
+// Escape
 function escapeHTML(str) {
     const div = document.createElement('div');
     div.appendChild(document.createTextNode(str));
     return div.innerHTML;
 }
 
-const addBtn = $('.add-btn')
-const addTaskModal = $('#addTaskModal')
-const closeBtn = $('.btn-close-modal')
-const titleInput = $('#title')
-const taskForm = $('.todo-app-form')
-const todoList = $("#todoList")
+// DOMs
+const addBtn = $('.add-btn');
+const addTaskModal = $('#addTaskModal');
+const closeBtn = $('.btn-close-modal');
+const taskForm = $('.todo-app-form');
+const todoList = $("#todoList");
 
-const confirmModal = $('#confirmModal'); 
-const confirmMessage = $('#confirmMessage'); 
-const cancelDeleteBtn = $('#cancelDeleteBtn'); 
-const confirmDeleteBtn = $('#confirmDeleteBtn'); 
+// Modal xác nhận
+const confirmModal = $('#confirmModal');
+const confirmMessage = $('#confirmMessage');
+const cancelDeleteBtn = $('#cancelDeleteBtn');
+const confirmDeleteBtn = $('#confirmDeleteBtn');
 
-let taskToDeleteIndex = -1; // Biến để lưu trữ chỉ mục của tác vụ sẽ bị xóa
+// Forminputs
+const formTitle = $('#formTitle');
+const formSubmitBtn = $('#formSubmitBtn');
+const taskIdInput = $('#task-id');
+const titleInput = $('#title');
 
-// Show modal xác nhận
+// Filters
+const searchInput = $('#searchInput');
+const filterStatus = $('#filterStatus');
+const filterCategory = $('#filterCategory');
+const filterPriority = $('#filterPriority');
+const filterColor = $('#filterColor');
+
+ // Biến để lưu trữ chỉ mục của tác vụ sẽ bị xóa
+let taskToDeleteIndex = -1;
+const todoTasks = JSON.parse(localStorage.getItem("todoTask")) ?? [];
+
+// Show modal xoá task
 function showConfirmModal(message, index) {
     confirmMessage.textContent = message; 
     taskToDeleteIndex = index; 
     confirmModal.classList.add('show'); 
 }
 
-// Hidden modal xác nhận
+// Hidden model xoá task
 function hideConfirmModal() {
     confirmModal.classList.remove('show'); // Ẩn modal
     taskToDeleteIndex = -1; // Đặt lại chỉ mục
@@ -46,20 +62,29 @@ confirmDeleteBtn.onclick = function() {
 
         localStorage.setItem("todoTask", JSON.stringify(todoTasks)); 
         renderTask(todoTasks);
+        applyFilters()
     }
     hideConfirmModal(); 
 };
 
-
+//Mở form
 function openForm(){
     addTaskModal.className = "modal-overlay show"
 
     titleInput.focus()
 }
-
+//Tắt form
 function closeForm(){
     addTaskModal.className = "modal-overlay"
     taskForm.reset()
+    
+    //Reset form khi edit
+    taskIdInput.value = ""; 
+    formTitle.textContent = "Add New Task";
+    formSubmitBtn.textContent = "Add Task";
+    formSubmitBtn.classList.remove('btn-edit-mode'); // Remove any edit mode class
+    // Đảm bảo radio màu đầu tiên được chọn mặc định khi reset form
+    $('#color-blue').checked = true; 
 } 
 
 //Hiển thị modal
@@ -67,9 +92,6 @@ addBtn.onclick = openForm
 
 //Đóng modal
 closeBtn.onclick = closeForm
-
-//Lấy giá trị từ localStorage add vào mảng
-const todoTasks = JSON.parse(localStorage.getItem("todoTask")) ?? [];
 
 //Xử lý khi form on submit
 taskForm.onsubmit = event => {
@@ -101,19 +123,13 @@ taskForm.onsubmit = event => {
     closeForm()
     }
 
-     renderTask(todoTasks)
+    renderTask(todoTasks)
+    applyFilters()
 }
 
 // Xử lý sự kiện click vào các button trên taskcard
 todoList.onclick = function(event){
     const actionBtn = event.target.closest('.action-btn');
-    const completeBtn = event.target.closest('.btn-complete');
-    const editBtn = event.target.closest('.btn-edit');
-    const deleteBtn = event.target.closest('.btn-delete')
-    
-    
-    
-
     
     //Bắt sự kiện khi nhấn vào card bất kì
     const taskCard = event.target.closest('.task-card');
@@ -128,17 +144,17 @@ todoList.onclick = function(event){
     if(!actionBtn) return; // Nếu không phải nút hành động thì thoát
 
     //Bắt event click vào button
-    if(actionBtn === deleteBtn){
+    if(actionBtn.classList.contains('btn-delete')){
         
         showConfirmModal(`Are you sure you want to delete the task "${taskTitle}"?`, index);
 
-    }else if(actionBtn === completeBtn){
+    }else if(actionBtn.classList.contains('btn-complete')){
         todoTasks[index].isCompleted = !todoTasks[index].isCompleted;
         
         localStorage.setItem("todoTask", JSON.stringify(todoTasks)); 
         renderTask(todoTasks); 
 
-    }else if(actionBtn === editBtn){
+    }else if(actionBtn.classList.contains('btn-edit')){
         $('#formTitle').innerText = 'Edit Task';
         $('#formSubmitBtn').innerText = 'Update Task';
 
@@ -161,13 +177,64 @@ todoList.onclick = function(event){
         openForm();
     }
     
-}  
+}
+
+//Filter
+function applyFilters() {
+    const searchKeyword = searchInput.value.toLowerCase().trim()
+    const status = filterStatus.value 
+    const category = filterCategory.value
+    const priority = filterPriority.value
+    const color = filterColor.value
+    
+    let filteredTasks = todoTasks
+
+    // Tìm kiếm theo từ khóa
+    if(searchKeyword){
+        filteredTasks = filteredTasks.filter(tasks =>
+            tasks.title.toLowerCase().trim().includes(searchKeyword) ||
+            tasks.description.toLowerCase().trim().includes(searchKeyword)
+        )
+    }
+
+    // Lọc theo trạng thái
+    if(status !== 'all'){
+        filteredTasks = filteredTasks.filter(tasks => {
+            return status === 'completed' ? tasks.isCompleted : !tasks.isCompleted
+        })
+    }
+
+    //Lọc theo category
+    if(category !==  'all'){
+        filteredTasks = filteredTasks.filter(tasks => tasks.category === category)
+    }
+
+    //Lọc theo priority
+    if(priority !== 'all'){
+        filteredTasks = filteredTasks.filter(tasks => tasks.priority === priority)
+    }
+
+    //Lọc theo color
+    if(color !== 'all'){
+        filteredTasks = filteredTasks.filter(tasks => tasks.cardColor === color)
+    }
+
+    renderTask(filteredTasks)
+}
+
+//Gắn sự kiện cho bộ lọc
+searchInput.addEventListener('input', applyFilters);
+filterStatus.addEventListener('change', applyFilters);
+filterCategory.addEventListener('change', applyFilters);
+filterPriority.addEventListener('change', applyFilters);
+filterColor.addEventListener('change', applyFilters);
 
 function renderTask(tasks){
 
-    if(!tasks.length){
-        // Thêm class "empty-message" vào thẻ p
-        todoList.innerHTML= `<p class="empty-message"> Nothing here... </p>`
+    if (!tasks || tasks.length === 0) {
+        // Hiển thị thông báo khi không có task nào hoặc không tìm thấy
+        const message = todoTasks.length === 0 ? "Nothing here..." : "Can not find the right task...";
+        todoList.innerHTML = `<p class="empty-message">${message}</p>`;
         return;
     }
 
@@ -207,5 +274,4 @@ function renderTask(tasks){
     todoList.innerHTML = html
 }
 
-
-renderTask(todoTasks)
+document.addEventListener('DOMContentLoaded', applyFilters);
