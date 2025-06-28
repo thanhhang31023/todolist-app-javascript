@@ -1,10 +1,13 @@
+/* --- BIẾN MÀU VÀ CÀI ĐẶT GỐC --- */
 :root {
-    --font-color: #424242;
+    --primary-bg: #f4f7fe;
     --secondary-bg: #ffffff;
+    --font-color: #424242;
     --primary-color: #6a5af9;
     --primary-color-dark: #5a4af1; /* Thêm màu đậm hơn cho hiệu ứng hover */
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --border-color: #e0e0e0;
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lifted: 0 10px 20px rgba(0,0,0,0.15); /* Thêm bóng đổ khi "nâng" card */
 }
 
 /* --- CÀI ĐẶT CHUNG --- */
@@ -14,21 +17,39 @@
 }
 
 body {
-    font-family: "Poppins", sans-serif;
+    font-family: 'Poppins', sans-serif;
     /* Lựa chọn 2: Gradient Sóng Biển */
-    background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+    background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);  
     color: var(--font-color);
     margin: 0;
     padding: 20px;
+    background-attachment: fixed; /* Giữ nền đứng yên khi cuộn */
 }
 
+/* Tùy chỉnh thanh cuộn (chi tiết nhỏ tạo khác biệt lớn) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #c3cfe2;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #b1bccc;
+}
+
+
+/* --- BỐ CỤC CHÍNH --- */
 .app-container {
     max-width: 900px;
     margin: auto;
     background-color: var(--secondary-bg);
     border-radius: 16px; /* Tăng độ bo tròn */
     box-shadow: var(--shadow);
-   
+    overflow: hidden;
 }
 
 .app-header {
@@ -41,7 +62,7 @@ body {
 
 .app-header h1 {
     margin: 0;
-    font-size: 24px; 
+    font-size: 24px;
 }
 
 .add-btn {
@@ -67,77 +88,266 @@ body {
     margin-right: 8px;
 }
 
+.task-list-container {
+    padding: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px; /* Tăng khoảng cách */
+}
 
-/* =============================================================== */
-/* CSS CHO KHU VỰC ĐIỀU KHIỂN (TÌM KIẾM & BỘ LỌC)                */
-/* =============================================================== */
-.app-controls {
-    padding: 20px 30px;
+
+/* --- NÂNG CẤP THẺ CÔNG VIỆC (TASK CARD) --- */
+.task-card {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px; /* Bo tròn hơn */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     display: flex;
-    flex-wrap: wrap; /* Cho phép rớt dòng trên màn hình nhỏ */
+    flex-direction: column;
+}
+
+.task-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lifted);
+}
+
+.task-card.completed .task-title {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.task-header {
+    color: white;
+    padding: 12px 15px; /* Tăng padding */
+    border-radius: 11px 11px 0 0; /* Điều chỉnh bo tròn khớp với card */
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 20px;
-    border-bottom: 1px solid var(--border-color);
-    background-color: #fcfdff;
 }
 
-/* --- Thanh tìm kiếm --- */
-.search-bar {
-    position: relative;
-    flex-grow: 1; /* Cho phép thanh tìm kiếm co giãn */
-    min-width: 250px; /* Độ rộng tối thiểu */
+.task-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600; /* In đậm tiêu đề */
 }
 
-.search-bar input {
+.action-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.8;
+    padding: 5px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
+
+.action-btn:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.task-body {
+    padding: 15px;
+    flex-grow: 1;
+}
+
+.task-description {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #616161; /* Màu chữ phụ */
+}
+
+.task-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-category {
+    background-color: #eef2f9;
+    padding: 4px 10px; /* Tăng padding */
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500; /* Tăng độ đậm */
+}
+
+/* Nâng cấp hiển thị độ ưu tiên */
+.task-priority {
+    font-weight: bold;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+.task-priority.high { 
+    color: #c62828;
+    background-color: rgba(244, 67, 54, 0.1);
+}
+.task-priority.medium {
+    color: #f57f17;
+    background-color: rgba(255, 152, 0, 0.1);
+}
+.task-priority.low {
+    color: #2e7d32;
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+
+.task-footer {
+    padding: 10px 15px;
+    border-top: 1px solid #f0f0f0; /* Làm mờ đường kẻ */
+    font-size: 12px;
+    color: #757575;
+}
+
+/* --- HIỆU ỨNG CHO MODAL --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 12px 15px 12px 40px; /* Thêm padding bên trái cho icon */
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0; /* Bắt đầu ẩn */
+    transition: opacity 0.3s ease; /* Hiệu ứng mờ dần */
+}
+
+.modal-overlay.show {
+    display: flex;
+    opacity: 1; /* Hiện ra */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    transform: scale(0.95); /* Bắt đầu hơi nhỏ */
+    transition: transform 0.3s ease; /* Hiệu ứng phóng to */
+}
+
+.modal-overlay.show .modal-content {
+    transform: scale(1); /* Phóng to về kích thước thật */
+}
+
+/* --- HOÀN THIỆN FORM --- */
+.todo-app-form h2 {
+    margin-top: 0;
+    margin-bottom: 25px; /* Thêm khoảng cách */
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px; /* Tăng khoảng cách */
+    font-weight: 500; /* Giảm độ đậm */
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px; /* Tăng padding */
     border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 16px;
     box-sizing: border-box;
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* Nền xám nhẹ */
 }
 
-.search-bar input:focus {
+/* Hiệu ứng focus chuyên nghiệp hơn */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
     background-color: white;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(106, 90, 249, 0.2);
     outline: none;
 }
 
-.search-bar i {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9e9e9e;
-    font-size: 16px;
-    pointer-events: none; /* Icon không bắt sự kiện click */
+
+.form-group-inline {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
 }
 
-/* --- Các bộ lọc --- */
-.filters {
+.form-group-inline .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.color-options {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
     gap: 15px;
 }
 
-.filters select {
-    padding: 10px;
-    border: 1px solid var(--border-color);
+.color-dot {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.color-options input[type="radio"] {
+    display: none;
+}
+
+/* Hiệu ứng chọn màu tốt hơn */
+.color-options input[type="radio"]:checked + label {
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-submit, .btn-close-modal {
+    padding: 10px 20px;
+    border: none;
     border-radius: 8px;
-    font-size: 14px;
-    background-color: white;
+    font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
 }
 
-.filters select:hover {
-    border-color: #c0c0c0;
+.btn-submit {
+    background-color: var(--primary-color);
+    color: white;
+}
+.btn-submit:hover {
+    background-color: var(--primary-color-dark);
 }
 
-.filters select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(106, 90, 249, 0.2);
-    outline: none;
+.btn-close-modal {
+    background-color: #f1f1f1;
+    color: #424242;
 }
+.btn-close-modal:hover {
+    background-color: #e0e0e0;
+}
+
+/* --- NÂNG CẤP MÀU SẮC THÀNH GRADIENT --- */
+.bg-blue { background-image: linear-gradient(45deg, #2196f3, #64b5f6); }
+.bg-green { background-image: linear-gradient(45deg, #4caf50, #81c784); }
+.bg-orange { background-image: linear-gradient(45deg, #ff9800, #ffb74d); }
+.bg-purple { background-image: linear-gradient(45deg, #9c27b0, #ba68c8); }
