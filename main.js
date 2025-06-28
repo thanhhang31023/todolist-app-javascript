@@ -34,6 +34,11 @@ const filterCategory = $('#filterCategory');
 const filterPriority = $('#filterPriority');
 const filterColor = $('#filterColor');
 
+// Modal cảnh báo
+const warningModal = $('#warningModal');
+const warningMessage = $('#warningMessage');
+const closeWarningBtn = $('#closeWarningBtn');
+
  // Biến để lưu trữ chỉ mục của tác vụ sẽ bị xóa
 let taskToDeleteIndex = -1;
 const todoTasks = JSON.parse(localStorage.getItem("todoTask")) ?? [];
@@ -50,6 +55,19 @@ function hideConfirmModal() {
     confirmModal.classList.remove('show'); // Ẩn modal
     taskToDeleteIndex = -1; // Đặt lại chỉ mục
 }
+
+//Show alert
+function showWarningModal(message) {
+    warningMessage.textContent = message;
+    warningModal.classList.add('show');
+}
+
+// hidden alert
+function hideWarningModal() {
+    warningModal.classList.remove('show');
+}
+
+closeWarningBtn.onclick = hideWarningModal;
 
 
 cancelDeleteBtn.onclick = hideConfirmModal; 
@@ -102,29 +120,40 @@ taskForm.onsubmit = event => {
 
     const editingIndex = $('#task-id').value;
 
+    const currentTitle = $('#title').value.trim().toLowerCase()
+
+    if(editingIndex !== ""){
+        if(todoTasks.some((task, index) => task.title.toLowerCase().trim() === currentTitle && index !==
+            parseInt(editingIndex))){
+                showWarningModal("Task with this title already exists. Please choose a different title.");
+                return
+            }    
+    }else{
+        if( todoTasks.some(task => task.title.toLowerCase().trim() === currentTitle)){
+            showWarningModal("Task with this title already exists. Please choose a different title.");
+            return
+        }
+    }
+
     if(editingIndex !== ''){
         let editTask = Object.fromEntries(new FormData(taskForm))
         editTask.isCompleted = todoTasks[editingIndex].isCompleted
         editTask.cardColor = selectedCardColor;
 
         todoTasks[editingIndex] = editTask
-        localStorage.setItem("todoTask", JSON.stringify(todoTasks))
-
-        closeForm()
+      
     }else{
-
     newTask.cardColor = selectedCardColor;
     newTask.isCompleted = false
 
     todoTasks.unshift(newTask)
-   
-    localStorage.setItem("todoTask", JSON.stringify(todoTasks))
 
-    closeForm()
     }
 
+    localStorage.setItem("todoTask", JSON.stringify(todoTasks))
     renderTask(todoTasks)
     applyFilters()
+    closeForm()
 }
 
 // Xử lý sự kiện click vào các button trên taskcard

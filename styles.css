@@ -494,6 +494,28 @@ body {
     background-color: #b71c1c;
 }
 
+/* Kiểu cho icon cảnh báo trong tiêu đề modal */
+.modal-content.small-modal h2 i {
+    margin-right: 10px;
+    color: #f57f17; /* Màu vàng cam cho cảnh báo */
+}
+
+/* Kiểu cho nút "Đã hiểu" của modal cảnh báo */
+.btn-warning-ok {
+    background-color: #ff9800; /* Màu cam */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-warning-ok:hover {
+    background-color: #f57c00; /* Màu cam đậm hơn khi hover */
+}
+
 /* --- NÂNG CẤP MÀU SẮC THÀNH GRADIENT --- */
 .bg-blue { background-image: linear-gradient(45deg, #2196f3, #64b5f6); }
 .bg-green { background-image: linear-gradient(45deg, #4caf50, #81c784); }
